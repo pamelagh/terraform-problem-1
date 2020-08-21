@@ -1,6 +1,6 @@
 provider "aws" {
-  profile = "default"
-  region  = "us-east-1"
+    profile = "default"
+    region  = "us-east-1"
 }
 
 resource "aws_vpc" "main" {
@@ -12,11 +12,11 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_internet_gateway" "default" {
-  vpc_id = aws_vpc.main.id
+    vpc_id = aws_vpc.main.id
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+    vpc = true
 }
 
 resource "aws_subnet" "public" {
@@ -26,13 +26,16 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public.id
+    allocation_id = aws_eip.nat.id
+    subnet_id     = aws_subnet.public.id
+    depends_on = [
+        aws_internet_gateway.default
+    ]
 }
 
 resource "aws_subnet" "public-network-1" {
     vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.1.0/24" #254 possible IPs
+    cidr_block = "10.0.1.0/24" #256 possible IPs
     map_public_ip_on_launch = "true"
 }
 
