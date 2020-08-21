@@ -11,9 +11,24 @@ resource "aws_vpc" "main" {
     enable_classiclink = "false"
 }
 
-# resource "aws_internet_gateway" "default" {
-#   vpc_id = aws_vpc.main.id
-# }
+resource "aws_internet_gateway" "default" {
+  vpc_id = aws_vpc.main.id
+}
+
+resource "aws_eip" "nat" {
+  vpc = true
+}
+
+resource "aws_subnet" "public" {
+    vpc_id = aws_vpc.main.id
+    cidr_block = "10.0.3.0/24"
+    map_public_ip_on_launch = "true"
+}
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public.id
+}
 
 resource "aws_subnet" "public-network-1" {
     vpc_id = aws_vpc.main.id
@@ -25,21 +40,6 @@ resource "aws_subnet" "public-network-2" {
     vpc_id = aws_vpc.main.id
     cidr_block = "10.0.2.0/24"
     map_public_ip_on_launch = "true"
-}
-
-resource "aws_subnet" "public-network-nat" {
-    vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.3.0/24"
-    map_public_ip_on_launch = "true"
-}
-
-resource "aws_eip" "nat" {
-  vpc = true
-}
-
-resource "aws_nat_gateway" "gw" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public-network-nat.id
 }
 
 # resource "aws_subnet" "private-network-1" {
