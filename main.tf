@@ -45,6 +45,13 @@ resource "aws_subnet" "public-network-2" {
     map_public_ip_on_launch = "true"
 }
 
+resource "aws_route_table" "routes" {
+    vpc_id = aws_vpc.main.id
+    route {
+        cidr_block = "0.0.0.0/0"
+        nat_gateway_id = aws_nat_gateway.nat.id
+    }
+}
 # resource "aws_subnet" "private-network-1" {
 #     vpc_id = aws_vpc.main.id
 #     cidr_block = "10.0.3.0/24"
