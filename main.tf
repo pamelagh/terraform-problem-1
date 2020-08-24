@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "default" {
     vpc_id = aws_vpc.main.id
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public-nat" {
     vpc_id = aws_vpc.main.id
     cidr_block = "10.0.3.0/24"
     map_public_ip_on_launch = "true"
@@ -27,7 +27,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "nat" {
     allocation_id = aws_eip.nat.id
-    subnet_id     = aws_subnet.public.id
+    subnet_id     = aws_subnet.public-nat.id
     depends_on = [
         aws_internet_gateway.default
     ]
@@ -60,6 +60,11 @@ resource "aws_route_table_association" "public-1" {
 
 resource "aws_route_table_association" "public-2" {
     subnet_id = aws_subnet.public-network-2.id
+    route_table_id = aws_route_table.public-routes.id
+}
+
+resource "aws_route_table_association" "public-nat" {
+    subnet_id = aws_subnet.public-nat.id
     route_table_id = aws_route_table.public-routes.id
 }
 
