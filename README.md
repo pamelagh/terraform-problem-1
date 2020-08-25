@@ -1,4 +1,11 @@
-Create VPC in AWS using terraform:
-- 2 public networks, 1 NAT gateway connected to 2 private networks.
-- Route table and route table associations needed for public subnets to connect to the INTERNET gatway.
-- Route table and route table associations needed for private subnets to connect to the NAT gatway.
+Steps to create VPC in AWS using terraform:
+
+- Created VPC instance.
+- Created Internet gateway.
+- Created route table for Internet gateway.
+- Created 2 public networks and their route table associations 
+to have internet access.
+- Created 1 public network and its route table association for the NAT gateway to have internet access.
+- Created NAT gateway.
+- Created 2 private networks and their route table associations
+to have internet access.

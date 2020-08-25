@@ -3,12 +3,6 @@ variable nat_cidr_block {
     description = "IP addressing scheme for NAT gateway."
 }
 
-variable profile {
-    type        = string
-    default     = "default"
-    description = "AWS profile name."
-}
-
 variable private_network_1_cidr_block {
     type        = string
     description = "IP addressing scheme for private network 1."
@@ -17,6 +11,12 @@ variable private_network_1_cidr_block {
 variable private_network_2_cidr_block {
     type        = string
     description = "IP addressing scheme for private network 2."
+}
+
+variable profile {
+    type        = string
+    default     = "default"
+    description = "AWS profile name."
 }
 
 variable public_network_1_cidr_block {
@@ -42,10 +42,4 @@ variable table_routes_cidr_block {
 variable vpc_cidr_block {
     type        = string
     description = "IP addressing scheme for VPC."
-}
-
-variable vpc_instance_tenancy {
-    type = string
-    default = "default"
-    description = "Instance launched into the VPC."
 }
