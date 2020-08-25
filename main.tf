@@ -1,13 +1,13 @@
 provider "aws" {
-    profile = "default"
-    region  = "us-east-1"
+    profile = var.profile
+    region  = var.region
 }
 
 resource "aws_vpc" "main" {
-    cidr_block = "10.0.0.0/16" #use IPs with 10.0.X.X
-    instance_tenancy = "default"
-    enable_dns_support = "true" #internal domain name
-    enable_dns_hostnames = "true" #internal host name
+    cidr_block = var.vpc_cidr_block
+    instance_tenancy = var.vpc_instance_tenancy
+    enable_dns_support = "true" #to have internal domain name
+    enable_dns_hostnames = "true" #to have internal host name
     enable_classiclink = "false"
 }
 
@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "default" {
 
 resource "aws_subnet" "public-nat" {
     vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.3.0/24"
+    cidr_block = var.nat_cidr_block
     map_public_ip_on_launch = "true"
 }
 
@@ -35,20 +35,20 @@ resource "aws_nat_gateway" "nat" {
 
 resource "aws_subnet" "public-network-1" {
     vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.1.0/24" #256 possible IPs
+    cidr_block = var.public_network_1_cidr_block #256 possible IPs
     map_public_ip_on_launch = "true"
 }
 
 resource "aws_subnet" "public-network-2" {
     vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.2.0/24"
+    cidr_block = var.public_network_2_cidr_block
     map_public_ip_on_launch = "true"
 }
 
 resource "aws_route_table" "public-routes" {
     vpc_id = aws_vpc.main.id
     route {
-        cidr_block = "0.0.0.0/0"
+        cidr_block = var.table_routes_cidr_block
         gateway_id = aws_internet_gateway.default.id
     }
 }
@@ -71,20 +71,20 @@ resource "aws_route_table_association" "public-nat" {
 resource "aws_route_table" "private-routes" {
     vpc_id = aws_vpc.main.id
     route {
-        cidr_block = "0.0.0.0/0"
+        cidr_block = var.table_routes_cidr_block
         nat_gateway_id = aws_nat_gateway.nat.id
     }
 }
 
 resource "aws_subnet" "private-network-1" {
     vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.4.0/24"
+    cidr_block = var.private_network_1_cidr_block
     map_public_ip_on_launch = "false"
 }
 
 resource "aws_subnet" "private-network-2" {
     vpc_id = aws_vpc.main.id
-    cidr_block = "10.0.5.0/24"
+    cidr_block = var.private_network_2_cidr_block
     map_public_ip_on_launch = "false"
 }
 
